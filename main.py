@@ -2,7 +2,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
+from sklearn.cluster import KMeans
 # ..............................................................LIBRERÍAS..............................................
 
 
@@ -53,3 +53,53 @@ features_numeric.to_csv('Interrupciones_Dataset_Preprocesado.csv', index=False)
 # ...............................................................PRE PROCESAMIENTO DE DATOS................................
 
 #####SEGUNDO COMMITT
+
+
+# ...............................................................CLUSTERING................................................
+# Realizar clustering con K-Means
+num_clusters = 2  # Número de clusters, puedes ajustarlo según sea necesario
+kmeans = KMeans(n_clusters=num_clusters, random_state=0)
+kmeans.fit(features_numeric)
+
+# Añadir los resultados del clustering al DataFrame original
+df['Cluster'] = kmeans.labels_
+
+# Guardar el DataFrame con los resultados del clustering
+df.to_csv('Interrupciones_Clusterizado.csv', index=False)
+# ...............................................................CLUSTERING................................................
+
+
+# ...........................................................GRÁFICOS DE DISPERSIÓN........................................
+# FECHAINICIO vs FECHAFIN
+plt.figure(figsize=(10, 6))
+plt.scatter(df['FECHAINICIO'], df['FECHAFIN'], c=df['Cluster'], cmap='viridis')
+plt.title('Grafico de dispersión de FECHAINICIO vs FECHAFIN por Cluster')
+plt.xlabel('FECHAINICIO')
+plt.ylabel('FECHAFIN')
+plt.colorbar(label='Cluster')
+plt.grid(True)
+plt.show()
+
+# NUMCONEXDOM vs UNIDADESUSO
+plt.figure(figsize=(10, 6))
+plt.scatter(df['NUMCONEXDOM'], df['UNIDADESUSO'], c=df['Cluster'], cmap='viridis')
+plt.title('Grafico de dispersión de NUMCONEXDOM vs UNIDADESUSO coloreado por Cluster')
+plt.xlabel('NUMCONEXDOM')
+plt.ylabel('UNIDADESUSO')
+plt.colorbar(label='Cluster')
+plt.grid(True)
+plt.show()
+
+
+# SFECHAINICIO vs UNIDADESUSO
+plt.figure(figsize=(10, 6))
+plt.scatter(df['FECHAINICIO'], df['UNIDADESUSO'], c=df['Cluster'], cmap='viridis')
+plt.title('Grafico de dispersión de FECHAINICIO vs UNIDADESUSO coloreado por Cluster')
+plt.xlabel('FECHAINICIO')
+plt.ylabel('UNIDADESUSO')
+plt.colorbar(label='Cluster')
+plt.grid(True)
+plt.show()
+# ...........................................................GRÁFICOS DE DISPERSIÓN........................................
+
+#####TERCER COMMIT
