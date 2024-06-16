@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score #ESTA FUE USADA PARA LA OBTECIÓN DEL NUMERO DE CLUSTERS
 
 
 # ..............................................................LIBRERÍAS..............................................
@@ -181,3 +182,98 @@ plt.show()
 # ...............................................................DATOS ESTADÍSTICOS PARTE 1................................
 
 #####QUINTO COMMIT
+
+# ...............................................................PRUEBAS ESTADÍSTICAS PARTE 2................................
+
+df = pd.read_csv('Interrupciones_Clusterizado.csv')
+
+# Gráfico de Líneas de Interrupciones a lo Largo del Tiempo
+plt.figure(figsize=(12, 6))
+df['FECHAINICIO'] = pd.to_datetime(df['FECHAINICIO'])
+df['Fecha'] = df['FECHAINICIO'].dt.date  # Extraer solo la fecha
+interrupciones_por_fecha = df.groupby('Fecha').size()
+interrupciones_por_fecha.plot(kind='line', marker='o', linestyle='-', color='b')
+plt.title('Número de Interrupciones a lo largo del Tiempo')
+plt.xlabel('Fecha')
+plt.ylabel('Número de Interrupciones')
+plt.grid(True)
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+#-
+
+import seaborn as sns
+
+# Cargar el DataFrame clusterizado
+df = pd.read_csv('Interrupciones_Clusterizado.csv')
+
+# Heatmap de Intensidad de Interrupciones por Hora y Día de la Semana
+df['FECHAINICIO'] = pd.to_datetime(df['FECHAINICIO'])
+df['DiaSemana'] = df['FECHAINICIO'].dt.day_name()
+df['HoraInicio'] = df['FECHAINICIO'].dt.hour
+heatmap_data = df.pivot_table(index='HoraInicio', columns='DiaSemana', values='Cluster', aggfunc='count')
+plt.figure(figsize=(10, 6))
+sns.heatmap(heatmap_data, cmap='YlGnBu', annot=True, fmt='d')
+plt.title('Intensidad de Interrupciones por Hora y Día de la Semana')
+plt.xlabel('Día de la Semana')
+plt.ylabel('Hora del Día')
+plt.tight_layout()
+plt.show()
+
+
+# Cargar el DataFrame clusterizado
+df = pd.read_csv('Interrupciones_Clusterizado.csv')
+
+# Convertir FECHAINICIO y FECHAFIN a datetime
+df['FECHAINICIO'] = pd.to_datetime(df['FECHAINICIO'])
+df['FECHAFIN'] = pd.to_datetime(df['FECHAFIN'])
+
+# Histograma de Duración de Interrupciones
+df['DuracionHoras'] = (df['FECHAFIN'] - df['FECHAINICIO']).dt.total_seconds() / 3600
+plt.figure(figsize=(10, 6))
+sns.histplot(df['DuracionHoras'], bins=30, kde=True)
+plt.title('Distribución de la Duración de las Interrupciones')
+plt.xlabel('Duración (horas)')
+plt.ylabel('Frecuencia')
+plt.tight_layout()
+plt.show()
+
+# Cargar el DataFrame clusterizado
+df = pd.read_csv('Interrupciones_Clusterizado.csv')
+
+# Mapa de Calor de Intensidad de Interrupciones por Departamento
+plt.figure(figsize=(12, 8))
+heatmap_departamento = df.pivot_table(index='DEPARTAMENTO', columns='Cluster', values='FECHAINICIO', aggfunc='count', fill_value=0)
+sns.heatmap(heatmap_departamento, cmap='Blues', annot=True, fmt='d')
+plt.title('Intensidad de Interrupciones por Departamento y Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Departamento')
+plt.tight_layout()
+plt.show()
+
+# Gráfico de Barras de Número de Conexiones Afectadas por Cluster
+plt.figure(figsize=(10, 6))
+sns.barplot(data=df, x='Cluster', y='NUMCONEXDOM', estimator=sum)
+plt.title('Número Total de Conexiones Afectadas por Cluster')
+plt.xlabel('Cluster')
+plt.ylabel('Número de Conexiones Afectadas')
+plt.tight_layout()
+plt.show()
+
+# Comparación de Tipos de Interrupción (Programadas vs. Imprevistas)
+plt.figure(figsize=(8, 6))
+sns.countplot(data=df, x='TIPOINTERRUPCION', hue='Cluster')
+plt.title('Comparación de Tipos de Interrupción por Cluster')
+plt.xlabel('Tipo de Interrupción')
+plt.ylabel('Número de Interrupciones')
+plt.legend(title='Cluster')
+plt.tight_layout()
+plt.show()
+
+# ...............................................................PRUEBAS ESTADÍSTICAS PARTE 2................................
+
+
+# ................................................................PRUEBAS DE PREDICCION ......................................
+
+#####SEXTO COMMIT
