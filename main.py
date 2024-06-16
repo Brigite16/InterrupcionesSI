@@ -50,4 +50,4 @@ features_numeric = pd.get_dummies(features_numeric, columns=['DEPARTAMENTO', 'PR
 features_numeric.to_csv('Interrupciones_Dataset_Preprocesado.csv', index=False)
 # ...............................................................PRE PROCESAMIENTO DE DATOS................................
 
-#####SEGUNDO COMMIT
+#####SEGUNDO COMMITT
