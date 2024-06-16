@@ -1,5 +1,7 @@
 # ..............................................................LIBRERÍAS..............................................
 import pandas as pd
+import matplotlib.pyplot as plt
+
 
 # ..............................................................LIBRERÍAS..............................................
 
@@ -23,3 +25,31 @@ df[camiones_apoyo_valores_nulos] = df[camiones_apoyo_valores_nulos].fillna(0).re
 # ...............................................................LIMPIEZA DE DATOS.........................................
 
 #####PRIMER COMMIT
+
+# ...............................................................PRE PROCESAMIENTO DE DATOS................................
+# Asegurarse de que las columnas de fecha y hora sean cadenas
+df['FECHAINICIO'] = df['FECHAINICIO'].astype(str)
+df['HORAINICIO'] = df['HORAINICIO'].astype(str)
+df['FECHAFIN'] = df['FECHAFIN'].astype(str)
+df['HORAFIN'] = df['HORAFIN'].astype(str)
+
+# Concatenar y convertir a datetime
+df['FECHAINICIO'] = pd.to_datetime(df['FECHAINICIO'] + ' ' + df['HORAINICIO'])
+df['FECHAFIN'] = pd.to_datetime(df['FECHAFIN'] + ' ' + df['HORAFIN'])
+
+# Seleccionar características relevantes para el clustering
+features = df[['FECHAINICIO', 'FECHAFIN', 'DEPARTAMENTO', 'PROVINCIA', 'DISTRITO', 'NUMCONEXDOM', 'UNIDADESUSO']]
+
+# Convertir columnas de fecha a valores numéricos (timestamp) para el clustering
+features_numeric = features.copy()
+features_numeric['FECHAINICIO'] = features_numeric['FECHAINICIO'].astype('int64') // 10**9
+features_numeric['FECHAFIN'] = features_numeric['FECHAFIN'].astype('int64') // 10**9
+
+# Convertir columnas categóricas a variables dummy
+features_numeric = pd.get_dummies(features_numeric, columns=['DEPARTAMENTO', 'PROVINCIA', 'DISTRITO'])
+
+# Guardar el DataFrame preprocesado
+features_numeric.to_csv('Interrupciones_Dataset_Preprocesado.csv', index=False)
+# ...............................................................PRE PROCESAMIENTO DE DATOS................................
+
+#####SEGUNDO COMMITT
