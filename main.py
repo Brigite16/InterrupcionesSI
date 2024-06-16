@@ -2,6 +2,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.cluster import KMeans
+
 
 # ..............................................................LIBRERÍAS..............................................
 
@@ -150,3 +152,32 @@ plt.tight_layout()
 plt.show()
 
 #####CUARTO COMMIT
+
+# 4. Duración promedio por departamento
+df['DURACION'] = (df['FECHAFIN'] - df['FECHAINICIO']).dt.total_seconds() / 3600  #  Calcular la duración de interrupción en horas
+
+duracion_promedio_por_departamento = df.groupby('DEPARTAMENTO')['DURACION'].mean()
+
+plt.figure(figsize=(10, 6))
+sns.barplot(x=duracion_promedio_por_departamento.index, y=duracion_promedio_por_departamento.values, palette='viridis')
+
+plt.xlabel('Departamento')
+plt.ylabel('Duración promedio de interrupciones (horas)')
+plt.title('Duración promedio de interrupciones por departamento')
+plt.xticks(rotation=45, ha='right')  # para mejor lectura
+plt.tight_layout()
+plt.show()
+
+# 5. Boxplot de la duración de las interrupciones por motivo
+plt.figure(figsize=(10, 6))
+sns.boxplot(x='MOTIVOINTERRUPCION', y='DURACION', data=df, palette='viridis')
+
+plt.xlabel('Motivo de interrupción')
+plt.ylabel('Duración de interrupciones (horas)')
+plt.title('Duración de interrupciones por motivo')
+plt.xticks(rotation=45, ha='right')  # para mejor lectura
+plt.tight_layout()
+plt.show()
+# ...............................................................DATOS ESTADÍSTICOS PARTE 1................................
+
+#####QUINTO COMMIT
